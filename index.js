@@ -1,9 +1,7 @@
 const express = require('express')
-const cors = require('cors') //can remove once frontend works on local server; npm remove cors
 const app = express()
 
 app.use(express.json()) //used to post/create note; creates the body
-app.use(cors()) //to connect backend w/ front end; //can remove once frontend works on local server
 app.use(express.static('dist')) //to show static files; html, js,etc
 app.use(requestLogger) //executed in order
 

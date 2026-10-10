@@ -4,9 +4,8 @@ const app = express()
 
 app.use(express.json()) //used to post/create note; creates the body
 app.use(cors()) //to connect backend w/ front end
+app.use(express.static('dist')) //to show static files; html, js,etc
 app.use(requestLogger) //executed in order
-app.use(unknownEndpoint)
-
 
 let notes = [
   {
@@ -99,6 +98,10 @@ app.delete('/api/notes/:id', (request, response) => {
 
   response.status(204).end() //code to show that it was removed
 })
+
+app.use(unknownEndpoint)
+
+
 
 // port creation
 

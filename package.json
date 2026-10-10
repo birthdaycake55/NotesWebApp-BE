@@ -9,7 +9,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf dist && cd ../notes && npm run build && xcopy dist \"..\\notes_backend\\dist\" /E /I /H /Y",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "comments": "deploy updates repos.; buildui builds frontend and copies prod. version under backend repos."
   },
   "dependencies": {
     "axios": "^1.20.0",

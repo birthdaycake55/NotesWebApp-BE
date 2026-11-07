@@ -39,6 +39,20 @@ function unknownEndpoint(request, response){
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(express.json()) //used to post/create note; creates the body
+app.use(express.static('dist')) //to show static files; html, js,etc
+app.use(requestLogger) //executed in order
+
 
 // getting the notes
 
@@ -52,14 +66,15 @@ app.get('/api/notes', (request, response) => { //handle request made to notes
   }) 
 })
 
-app.get('/api/notes/:id', (request, response) => { //route for a specific note
+app.get('/api/notes/:id', (request, response, next) => { //route for a specific note
   Note.findById(request.params.id).then(note=>{
   if(note){
   response.json(note)
   } else {
     response.status(404).end() //change status if note not found
   }
-})})
+})
+.catch(error=> next(error))}) //if promise is rejected; passes error to express
 
 // creating note
 app.post('/api/notes', (request, response) => {
@@ -80,17 +95,40 @@ app.post('/api/notes', (request, response) => {
   })
 })
 
+//updating note
+
+app.put('/api/notes/:id', (request, response, next) => {
+  const { content, important } = request.body
+
+  Note.findById(request.params.id)
+  .then(note => {
+    if (!note){
+      return response.status(404).end()
+    }
+
+    note.content = content
+    note.important = important
+
+    return note.save().then((updatedNote)=>{
+      response.json(updatedNote)
+    })
+  })
+  .catch(error=>next(error))
+})
+
 // deleting note
 
-app.delete('/api/notes/:id', (request, response) => { 
-  const id = request.params.id
-  notes = notes.filter((note) => note.id !== id)
-
-  response.status(204).end()
+app.delete('/api/notes/:id', (request, response, next) => { 
+  Note.findByIdAndDelete(request.params.id)
+  .then(result=>{
+    response.status(204).end()
+  })
+  .catch(error=>next(error))
 })
 
 app.use(unknownEndpoint)
-
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler)
 
 
 // port creation

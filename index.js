@@ -7,23 +7,6 @@ app.use(express.json()) //used to post/create note; creates the body
 app.use(express.static('dist')) //to show static files; html, js,etc
 app.use(requestLogger) //executed in order
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  }
-]
 
 //middleware; functions used for handling requestand responses
 
@@ -39,7 +22,7 @@ function unknownEndpoint(request, response){
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const errorHandler = (error, request, response, next) => {
+function errorHandler(error, request, response, next){
   console.error(error.message)
 
   if (error.name === 'CastError') {

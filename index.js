@@ -27,7 +27,9 @@ function errorHandler(error, request, response, next){
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError'){
+    return response.status(400).json({ error: error.message})
+  }
 
   next(error)
 }
@@ -60,14 +62,8 @@ app.get('/api/notes/:id', (request, response, next) => { //route for a specific 
 .catch(error=> next(error))}) //if promise is rejected; passes error to express
 
 // creating note
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
-
-  if (!body.content) { //if note is empty
-    return response.status(400).json({ 
-      error: 'content missing' 
-    })
-  }
 
   const note = new Note({ //using the MDB schema
     content: body.content,
@@ -76,6 +72,7 @@ app.post('/api/notes', (request, response) => {
   note.save().then((savedNote)=>{
     response.json(savedNote)
   })
+  .catch(error=>next(error))
 })
 
 //updating note

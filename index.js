@@ -1,5 +1,7 @@
+require('dotenv').config() //use .env file
 const express = require('express')
 const app = express()
+const Note = require('./models/note')
 
 app.use(express.json()) //used to post/create note; creates the body
 app.use(express.static('dist')) //to show static files; html, js,etc
@@ -38,36 +40,28 @@ function unknownEndpoint(request, response){
 }
 
 
-// getting the wtv
+// getting the notes
 
 app.get('/', (request, response) => { //handle request at the root ('/')
   response.send('<h1>Hello World!</h1>') //express automatically sets value to text/html
 })
 
 app.get('/api/notes', (request, response) => { //handle request made to notes
-  response.json(notes) //sends notes array as a json string; sets value as application/json
+  Note.find({}).then(notes=>{
+      response.json(notes) //sends notes array as a json string; sets value as application/json
+  }) 
 })
 
 app.get('/api/notes/:id', (request, response) => { //route for a specific note
-  const id = request.params.id //request the id
-  const note = notes.find(note => note.id === id)
+  Note.findById(request.params.id).then(note=>{
   if(note){
   response.json(note)
   } else {
     response.status(404).end() //change status if note not found
   }
-})
+})})
 
 // creating note
-
-
-function generateId(){
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => Number(n.id))) //creates array of ids then finds max
-    : 0
-  return String(maxId + 1)
-}
-
 app.post('/api/notes', (request, response) => {
   const body = request.body
 
@@ -77,24 +71,22 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const note = {
+  const note = new Note({ //using the MDB schema
     content: body.content,
     important: body.important || false, //if missing; default to missing
-    id: generateId(),
-  }
-
-  notes = notes.concat(note)
-
-  response.json(note)
+  })
+  note.save().then((savedNote)=>{
+    response.json(savedNote)
+  })
 })
 
 // deleting note
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response) => { 
   const id = request.params.id
-  notes = notes.filter(note => note.id !== id)
+  notes = notes.filter((note) => note.id !== id)
 
-  response.status(204).end() //code to show that it was removed
+  response.status(204).end()
 })
 
 app.use(unknownEndpoint)
@@ -103,6 +95,6 @@ app.use(unknownEndpoint)
 
 // port creation
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT) //listen to request sent to {PORT}
 console.log(`Server running on port ${PORT}`)

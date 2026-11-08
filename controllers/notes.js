@@ -21,7 +21,7 @@ notesRouter.get('/:id', (request, response, next) => { //route for a specific no
 .catch(error=> next(error))}) //if promise is rejected; passes error to express
 
 // creating note
-notesRouter.post('/api/notes', (request, response, next) => {
+notesRouter.post('/', (request, response, next) => {
   const body = request.body
 
   const note = new Note({ //using the MDB schema
@@ -36,7 +36,7 @@ notesRouter.post('/api/notes', (request, response, next) => {
 
 //updating note
 
-notesRouter.put('/api/notes/:id', (request, response, next) => {
+notesRouter.put('/:id', (request, response, next) => {
   const { content, important } = request.body
 
   Note.findById(request.params.id)
@@ -57,7 +57,7 @@ notesRouter.put('/api/notes/:id', (request, response, next) => {
 
 // deleting note
 
-notesRouter.delete('/api/notes/:id', (request, response, next) => { 
+notesRouter.delete('/:id', (request, response, next) => { 
   Note.findByIdAndDelete(request.params.id)
   .then(result=>{
     response.status(204).end()

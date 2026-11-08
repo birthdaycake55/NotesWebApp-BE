@@ -12,6 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../notes && npm run build && xcopy dist \"..\\notes_backend\\dist\" /E /I /H /Y",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "lint": "eslint",
     "comments": "deploy updates repos.; buildui builds frontend and copies prod. version under backend repos.",
     "comments2": "axios: for promises(not anymore), dotenv: for env. vars, express: for promises, mongoose: mongodb"
   },
@@ -22,5 +23,11 @@
     "express": "^5.3.0",
     "mongoose": "^9.11.1",
     "node.js": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0"
   }
 }

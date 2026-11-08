@@ -1,5 +1,5 @@
 const notesRouter = require('express').Router() //performs middleware and routing functions
-const Note = require('./models/note')
+const Note = require('../models/note')
 
 // getting the notes
 //response.send('<h1>Hello World!</h1>') //express automatically sets value to text/html

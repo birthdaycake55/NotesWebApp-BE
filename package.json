@@ -7,9 +7,9 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_END=development node --watch index.js",
+    "test": "cross-env NODE_ENV=test node --test",
     "build:ui": "rm -rf dist && cd ../notes && npm run build && xcopy dist \"..\\notes_backend\\dist\" /E /I /H /Y",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint",
@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^1.20.0",
     "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
     "dotenv": "^18.0.7",
     "express": "^5.3.0",
     "mongoose": "^9.11.1",
@@ -28,6 +29,7 @@
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.14.0",
-    "globals": "^17.14.0"
+    "globals": "^17.14.0",
+    "supertest": "^7.3.2"
   }
 }

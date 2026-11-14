@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/notes/
+
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "salainen"
+}

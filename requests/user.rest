@@ -1,4 +1,5 @@
-POST http://localhost:3001/api/notes/
+POST http://localhost:3001/api/users/
+Content-type: application/json
 
 {
     "username": "root",
